@@ -103,18 +103,44 @@ class Tools(object):
         """
         print(f"""{tool["name"]}\t|\t{tool["description"]}\t|\t{tool["link"]}""")
 
-    def search_tool(self, string):
+    def search_tool(self, args):
         """
         Takes a string and regex searches the database
         """
-        for tool in self.tools["tools"]:
-            regex = compile(f".*{string}.*")
-            if any([
-                    regex.match(tool["name"]),
-                    regex.match(tool["description"]),
-                    regex.match(tool["link"]),
-                ]):
-                self.print_tool(tool)
+        found_names = set()
+        if len(args) == 1:
+            pieces = args[0].split(",")
+            for index in range(len(pieces)):
+                string = pieces[index]
+                for tool in self.tools["tools"]:
+                    regex = compile(f".*{string}.*")
+                    if any([
+                            regex.match(tool["name"]),
+                            regex.match(tool["description"]),
+                            regex.match(tool["link"]),
+                        ]):
+                        for elms in pieces[index-1:]:
+                            regex_ = compile(f".*{elms}.*")
+                            if not any([
+                                    regex_.match(tool["name"]),
+                                    regex_.match(tool["description"]),
+                                    regex_.match(tool["link"]),
+                                ]): 
+                                break
+                            if not tool["name"] in found_names:
+                                found_names.add(tool["name"])
+                                self.print_tool(tool)
+        else:
+            string = " ".join(args)
+            for tool in self.tools["tools"]:
+                regex = compile(f".*{string}.*")
+                if any([
+                        regex.match(tool["name"]),
+                        regex.match(tool["description"]),
+                        regex.match(tool["link"]),
+                    ]):
+                    self.print_tool(tool)
+
                 
     def add_hack(self, hack_name:str=None, description: str=None):
         """
@@ -125,33 +151,30 @@ class Tools(object):
 
         self.tools["hacks"]
 
-
-if __name__ == "__main__":
-    tools = Tools("/opt/sicalab/tools")
-    tools.create_load_tools()
-    if len(sys.argv) <= 1:
+def args_tools():
+    if len(sys.argv) <= 2:
         for tool in tools.tools["tools"]:
             tools.print_tool(tool)
-    elif len(sys.argv) <= 2:
-        tool_name = sys.argv[1]
+    elif len(sys.argv) <= 3:
+        tool_name = sys.argv[2]
         if not tool_name in [x["name"] for x in tools.tools["tools"]]:
             logger.debug("Your tool does not exists :( I'm gonna create it !")
-            tools.add_tool(sys.argv[1])
-        tools.search_tool(sys.argv[1])
+            tools.add_tool(sys.argv[2])
+        tools.search_tool(sys.argv[2])
     else:
-        if sys.argv[1] == "add":
-            tools.add_tool(*sys.argv[2:])
-        elif sys.argv[1] == "search":
-            tools.search_tool(" ".join(sys.argv[2:]))
-        elif sys.argv[1] == "del":
-            tools.del_tool(sys.argv[2])
+        if sys.argv[2] == "add":
+            tools.add_tool(*sys.argv[3:])
+        elif sys.argv[2] == "search":
+            tools.search_tool(sys.argv[3:])
+        elif sys.argv[2] == "del":
+            tools.del_tool(sys.argv[3])
         else:
-            tool_name = sys.argv[1]
+            tool_name = sys.argv[2]
             if not tool_name in [x["name"] for x in tools.tools["tools"]]:
                 logger.debug("Your tool does not exists :( I'm gonna create it !")
-                tools.add_tool(sys.argv[1])
+                tools.add_tool(sys.argv[2])
             
-            mode = sys.argv[2]
+            mode = sys.argv[3]
 
             if mode.lower().startswith("d"):
                 mode = "description"
@@ -160,7 +183,7 @@ if __name__ == "__main__":
             else:
                 mode = None
 
-            if len(sys.argv) < 3:
+            if len(sys.argv) < 4:
                 # dumping content of requested tool's field
                 for x in tools.tools["tools"]:
                     if x["name"] == tool_name:
@@ -172,12 +195,21 @@ if __name__ == "__main__":
             else:
                 # adding content to the tool
                 tool_index =  [x for x in range(len(tools.tools["tools"])) if tools.tools["tools"][x]["name"] == tool_name][0]
-                if len(sys.argv) == 4:
-                    content = "".join(sys.argv[3])
+                if len(sys.argv) == 5:
+                    content = "".join(sys.argv[4])
                 else:
-                    content = " ".join(sys.argv[3:])
+                    content = " ".join(sys.argv[4:])
 
                 tools.tools["tools"][tool_index][mode] = content
+
+if __name__ == "__main__":
+    tools = Tools("/opt/sicalab/tools")
+    tools.create_load_tools()
+    if sys.argv[1] == "tools":
+        args_tools()
+    elif sys.argv[1] == "hacks":
+        #args_tools()
+        pass
     
     tools.write_tools()
 
