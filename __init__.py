@@ -40,6 +40,8 @@ class Tools(object):
                 content = dict()
             finally:
                 self.tools = content
+                self.tools.setdefault("tools", list())
+                self.tools.setdefault("hacks", list())
     
     def write_tools(self,):
         """
@@ -125,9 +127,8 @@ class Tools(object):
 
 
 if __name__ == "__main__":
-    tools = Tools("/tmp/tools")
+    tools = Tools("/opt/sicalab/tools")
     tools.create_load_tools()
-    logger.debug(sys.argv)
     if len(sys.argv) <= 1:
         for tool in tools.tools["tools"]:
             tools.print_tool(tool)
