@@ -284,8 +284,9 @@ def args_tools():
             else:
                 mode = None
 
-            if len(sys.argv) < 4:
+            if len(sys.argv) <= 4:
                 # dumping content of requested tool's field
+                content = {"name":"", "description": "", "link": ""}
                 for x in tools.tools["tools"]:
                     if x["name"] == tool_name:
                         content = x
