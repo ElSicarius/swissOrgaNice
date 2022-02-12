@@ -54,7 +54,7 @@ Names of hacks can be with spaces
 ### Print hack category
 `hacks path traversal`
 
-### Add hack to list
+### Add new hack to list
 `hacks path traversal`
 
 ### Add method to hack

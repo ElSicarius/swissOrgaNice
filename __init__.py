@@ -367,6 +367,11 @@ def args_hacks():
                 logger.debug("Your hack does not exists :( I'm gonna create it !")
                 tools.add_hack(hack_name)
             
+            for elm in tools.tools["hacks"]:
+                hack_name_, content = list(elm.items())[0]
+                if hack_name == hack_name_:
+                    for element in content:
+                        tools.print_hack(element)
             #mode = sys.argv[3]
     
 
