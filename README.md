@@ -3,9 +3,16 @@ A simple tool to find your toolset n hacks
 
 aliases:
 ```bash
-alias tools='python3 /opt/swissOrgaNice/__init__.py tools'
-alias hacks='python3 /opt/swissOrgaNice/__init__.py hacks'
+alias tools='python3 /opt/swissOrgaNice/swissOrgaNice.py tools'
+alias hacks='python3 /opt/swissOrgaNice/swissOrgaNice.py hacks'
 ```
+
+bash completion:
+```bash
+cp tools-autocomplete.bash ~/.bash-completion.d/tools-autocomplete.bash
+echo "source ~/.bash-completion.d/tools-autocomplete.bash" >> ~/.zshrc
+```
+then type `rehash`
 
 ## Usage for "tools"
 
