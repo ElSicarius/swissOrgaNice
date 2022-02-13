@@ -117,33 +117,33 @@ class Tools(object):
         if len(args) == 1:
             pieces = args[0].split(",")
             for index in range(len(pieces)):
-                string = pieces[index]
+                string = pieces[index].lower()
                 for tool in self.tools["tools"]:
                     regex = compile(f".*{string}.*")
                     if any([
-                            regex.match(tool["name"]),
-                            regex.match(tool["description"]),
-                            regex.match(tool["link"]),
+                            regex.match(tool["name"].lower()),
+                            regex.match(tool["description"].lower()),
+                            regex.match(tool["link"].lower()),
                         ]):
                         for elms in pieces[index-1:]:
-                            regex_ = compile(f".*{elms}.*")
+                            regex_ = compile(f".*{elms.lower()}.*")
                             if not any([
-                                    regex_.match(tool["name"]),
-                                    regex_.match(tool["description"]),
-                                    regex_.match(tool["link"]),
+                                    regex_.match(tool["name"].lower()),
+                                    regex_.match(tool["description"].lower()),
+                                    regex_.match(tool["link"].lower()),
                                 ]): 
                                 break
                             if not tool["name"] in found_names:
                                 found_names.add(tool["name"])
                                 self.print_tool(tool)
         else:
-            string = " ".join(args)
+            string = " ".join(args).lower()
             for tool in self.tools["tools"]:
                 regex = compile(f".*{string}.*")
                 if any([
-                        regex.match(tool["name"]),
-                        regex.match(tool["description"]),
-                        regex.match(tool["link"]),
+                        regex.match(tool["name"].lower()),
+                        regex.match(tool["description"].lower()),
+                        regex.match(tool["link"].lower()),
                     ]):
                     self.print_tool(tool)
 
